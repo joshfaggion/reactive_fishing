@@ -15,15 +15,15 @@ class Server < Sinatra::Base
 
   def self.game_state
     number_of_bots = @@num_of_players.to_i
-
     {
       player_cards: @@player.img_compatible_cards,
       player_name: @@player.name,
       num_of_players: @@num_of_players,
       bots: self.return_bot_stats(@@game),
-      turn: 1,
+      turn: @@game.turn,
       cardsLeftInDeck: 10,
-      game_log: ["This is the game log!", "This is another thing, woohoo!", "Happy Day!"]
+      # This will be taken into function, but its not really necessary right now.
+      game_log: @@game.last_five_responses
       }
   end
 
@@ -58,13 +58,15 @@ class Server < Sinatra::Base
   end
 
   post('/join') do
+    @@game = nil
+    @@bot_names = []
     push = JSON.parse(request.body.read)
     @@name = push['name']
   end
 
   post('/num_of_players') do
     push = JSON.parse(request.body.read)
-    @@num_of_players = push['name']
+    @@num_of_players = push['numOfPlayers']
     self.class.initialize_game(@@num_of_players)
     hash = {status: 200}
     json hash
@@ -72,5 +74,20 @@ class Server < Sinatra::Base
 
   get('/game') do
     json self.class.game_state
+  end
+
+  get('/component_to_render') do
+    @@game ||= nil
+    if @@game == nil
+      hash = {game_existing: false}
+      json hash
+    else
+      hash = {game_existing: true}
+      json hash
+    end
+  end
+
+  post('/request') do
+    
   end
 end

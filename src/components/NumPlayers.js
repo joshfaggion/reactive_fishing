@@ -20,7 +20,7 @@ class NumPlayers extends React.Component {
       // This tells it to use a post method.
       method: 'POST',
       body: JSON.stringify({
-        name: this.state.value
+        numOfPlayers: this.state.value
       })
     }).then(response => this.props.updateState("Game"));
     event.preventDefault();

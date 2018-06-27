@@ -7,6 +7,10 @@ class GameLog extends React.Component {
   render() {
         return (
           <div>
+          {this.props.log.map((name, index) =>
+            <h4 key={`Log${index}`}>{name}</h4>
+            )
+          }
           </div>
         )
     }

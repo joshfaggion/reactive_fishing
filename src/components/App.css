@@ -7,7 +7,21 @@ body {
 }
 
 .playing-space {
-  height: 300px;
+  height: 200px;
+}
+
+.game-log {
+  text-align: left;
+  display: inline-block;
+  font-size: 15px;
+  position: fixed;
+  right: 6px;
+  bottom: 6px;
+}
+
+.highlight {
+  border: 2px solid green;
+  border-radius:7px;
 }
 
 .holder {

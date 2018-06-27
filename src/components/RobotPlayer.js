@@ -5,14 +5,40 @@ import HiddenHand from './HiddenHand'
 
 class RobotPlayer extends React.Component {
 
-  render() {
-        return (
-          <div className='player-div'>
-            <h1>{this.props.name}</h1>
-            <HiddenHand cards={this.props.cards} matches={this.props.matches}/>
-          </div>
-        )
+  correctPlayer(player) {
+    if (this.props.targetPlayer === player) {
+      return (
+        <div onClick={() => {this.props.selectPlayer(this.props.name)}}>
+          <h1 className="highlight">{this.props.name}</h1>
+          <HiddenHand className="highlight" cards={this.props.cards} matches={this.props.matches} />
+        </div>
+      )
+    } else {
+      return (
+        <div onClick={() => {this.props.selectPlayer(this.props.name)}}>
+          <h1>{this.props.name}</h1>
+          <HiddenHand cards={this.props.cards} matches={this.props.matches}/>
+        </div>
+      )
     }
+  }
+
+  render() {
+    if (this.props.turn === 1) {
+      return (
+        <div className='player-div'>
+          {this.correctPlayer(this.props.name)}
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <h1>{this.props.name}</h1>
+          <HiddenHand cards={this.props.cards} matches={this.props.matches}/>
+        </div>
+      )
+    }
+  }
 }
 
 export default RobotPlayer;

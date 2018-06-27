@@ -16,6 +16,18 @@ class App extends React.Component {
     this.setState({currentComponent: str})
   }
 
+  componentDidMount() {
+    fetch('/component_to_render', {
+      method: 'GET'
+    }).then(info => info.json()).then((info) => {
+      if (info['game_existing'] === true) {
+        this.setState({
+          currentComponent: "Game"
+        });
+      }
+    });
+  }
+
   render() {
     if (this.state.currentComponent === "Join") {
       return (

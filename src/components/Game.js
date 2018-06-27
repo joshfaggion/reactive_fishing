@@ -4,6 +4,7 @@ import './index.css';
 import HumanPlayer from './HumanPlayer'
 import RobotPlayer from './RobotPlayer'
 import PlayingSpace from './PlayingSpace'
+import GameLog from './GameLog'
 
 class Game extends React.Component {
   constructor(props) {
@@ -13,8 +14,27 @@ class Game extends React.Component {
       playerName: "",
       playerCards: [],
       numOfPlayers: 0,
-      gameLog: []
+      gameLog: [],
+      targetCard: '',
+      targetPlayer: '',
+      turn: 1
     };
+  }
+
+  selectCard(card) {
+    let card_rank = card.slice(1)
+    if (card_rank === "0") {
+      card_rank = "10"
+    }
+    this.setState({
+      targetCard: card_rank
+    });
+  }
+
+  selectPlayer(player) {
+    this.setState({
+      targetPlayer: player
+    })
   }
 
   componentDidMount() {
@@ -30,7 +50,6 @@ class Game extends React.Component {
         cardsLeftInDeck: info['cardsLeftInDeck'],
         gameLog: info['game_log']
       });
-      console.log(this.state.bots)
     });
   }
 
@@ -41,7 +60,7 @@ class Game extends React.Component {
           <div className="App">
             <div className="holder">
               {this.state.bots.map((name, index) =>
-                <RobotPlayer key={`Robot${index}`} cards={this.state.bots[index][1]} name={this.state.bots[index][0]} matches={this.state.bots[index][2]}/>
+                <RobotPlayer turn={this.state.turn} targetPlayer={this.state.targetPlayer} selectPlayer={this.selectPlayer.bind(this)} key={`Robot${index}`} cards={this.state.bots[index][1]} name={this.state.bots[index][0]} matches={this.state.bots[index][2]}/>
                 )
               }
             </div>
@@ -49,7 +68,7 @@ class Game extends React.Component {
               <PlayingSpace />
             </div>
             <div>
-              <HumanPlayer name={this.state.playerName} playerHand={cards}/>
+              <HumanPlayer turn={this.state.turn} name={this.state.playerName} targetPlayer={this.state.targetPlayer} targetCard={this.state.targetCard} playerHand={cards} selectCard={this.selectCard.bind(this)}/>
             </div>
             <div className="game-log">
               <GameLog log={this.state.gameLog}/>
