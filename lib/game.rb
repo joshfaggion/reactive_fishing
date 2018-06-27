@@ -13,6 +13,8 @@ class Game
     @deck = CardDeck.new()
     @deck.shuffle
     @responses = []
+    @num_of_players = num_of_players
+    # This is for the first game mode with terminals.
     # num_of_players.times do
     #   @players_array.push(Player.new)
     # end
@@ -22,6 +24,13 @@ class Game
     player = Player.new(name)
     @players_array.push(player)
     return player
+  end
+
+  def fill_up_with_robots(bot_names)
+    num_of_bots = bot_names.length - 1
+    num_of_bots.times do |index|
+      create_player(bot_names[index])
+    end
   end
 
   def begin_game

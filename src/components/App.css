@@ -1,0 +1,54 @@
+body {
+  background-color:darken($color-1, 4%);
+}
+
+.App {
+  text-align: center;
+}
+
+.playing-space {
+  height: 300px;
+}
+
+.holder {
+  margin-top: -15px;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.card-in-hand {
+  margin-left: -34px;
+}
+
+.player_div {
+  text-align:center;
+  width : 190px;
+  margin: 0 20px 10px 20px;
+  display : inline-block;
+}
+
+.App-logo {
+  animation: App-logo-spin infinite 5s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-title {
+  font-size: 1.5em;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

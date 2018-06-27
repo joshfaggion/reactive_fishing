@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React from 'react';
+import logo from './jb.png';
 import './App.css';
+import './index.css';
 
-class JoinGame extends React.Component {
+class Join extends React.Component {
   constructor(props) {
     super(props);
     // Binds the functions to this.
@@ -25,9 +26,7 @@ class JoinGame extends React.Component {
       body: JSON.stringify({
         name: this.state.value
       })
-    }).then(function(response) {
-      console.log(response.json())
-    });
+    }).then(response => this.props.updateState("NumPlayers"));
     event.preventDefault();
   }
 
@@ -36,12 +35,12 @@ class JoinGame extends React.Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome To Go Fish!</h1>
+          <h1 className="App-title">-Join Game-</h1>
         </header>
         <br/>
         <p> Name: </p>
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" name="name" required="" value={this.state.value} onChange={this.handleChange}/>
+        <form onSubmit={this.handleSubmit.bind(this)}>
+          <input type="text" name="name" required="" value={this.state.value} onChange={this.handleChange.bind(this)}/>
           <input type="submit" value="Submit"/>
         </form>
       </div>
@@ -49,4 +48,4 @@ class JoinGame extends React.Component {
   }
 }
 
-export default JoinGame;
+export default Join;

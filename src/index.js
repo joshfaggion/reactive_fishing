@@ -1,11 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import JoinGame from './JoinGame';
+import './components/index.css';
 import registerServiceWorker from './registerServiceWorker';
+import App from './components/App'
 
 
 
-
-ReactDOM.render(<JoinGame />, document.getElementById('root'));
+ReactDOM.render(<App/>, document.getElementById('root'));
 registerServiceWorker();
