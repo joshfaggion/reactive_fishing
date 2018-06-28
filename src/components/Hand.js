@@ -32,7 +32,6 @@ class Hand extends React.Component {
           </div>
         )
       } else {
-        console.log("inside the else loop.")
         return (
           <div>
           {cards.map((card, index) =>

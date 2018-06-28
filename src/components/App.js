@@ -17,16 +17,15 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    console.log('It did mount!!')
     fetch('/component_to_render', {
       method: 'GET'
     }).then(info => info.json()).then((info) => {
       if (info['game_existing'] === true) {
         this.setState({
-          currentComponent: "Game"
+          currentComponent: "Game",
         });
       }
-    });
+    })
   }
 
   render() {
@@ -45,7 +44,7 @@ class App extends React.Component {
     } else {
       return (
         <div>
-          <Game/>
+          <Game updateState={this.updateState.bind(this)}/>
         </div>
       );
     }

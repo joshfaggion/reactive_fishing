@@ -53,6 +53,22 @@ class Game extends React.Component {
     });
   }
 
+  componentDidUpdate() {
+    fetch('/game', {
+      method: 'GET'
+    }).then(info => info.json()).then((info) => {
+      this.setState({
+        playerName: info['player_name'],
+        bots: info['bots'],
+        numOfPlayers: info['num_of_players'],
+        playerCards: info['player_cards'],
+        turn: info['turn'],
+        cardsLeftInDeck: info['cardsLeftInDeck'],
+        gameLog: info['game_log']
+      });
+    })
+  }
+
 
   render() {
     const cards=this.state.playerCards
@@ -68,7 +84,7 @@ class Game extends React.Component {
               <PlayingSpace />
             </div>
             <div>
-              <HumanPlayer turn={this.state.turn} name={this.state.playerName} targetPlayer={this.state.targetPlayer} targetCard={this.state.targetCard} playerHand={cards} selectCard={this.selectCard.bind(this)}/>
+              <HumanPlayer updateState={this.props.updateState.bind(this)} turn={this.state.turn} name={this.state.playerName} targetPlayer={this.state.targetPlayer} targetCard={this.state.targetCard} playerHand={cards} selectCard={this.selectCard.bind(this)}/>
             </div>
             <div className="game-log">
               <GameLog log={this.state.gameLog}/>

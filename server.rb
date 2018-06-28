@@ -16,10 +16,11 @@ class Server < Sinatra::Base
   @@bot_names = []
   @@game = false
 
-  def self.run_bot_turn(bot_name)
-    bot = @@game.find_player_by_name(bot_name)
-    target_card = bot.player_hand[rand(player_hand.length)]
-  end
+  # def self.run_bot_turn(bot_name)
+  #   bot = @@game.players_array[@@game.find_player_by_name(bot_name)]
+  #   target_card = bot.player_hand[rand(player_hand.length)]
+  #   binding.pry
+  # end
 
   def self.game_state
     number_of_bots = @@num_of_players.to_i
@@ -29,7 +30,7 @@ class Server < Sinatra::Base
       num_of_players: @@num_of_players,
       bots: self.return_bot_stats(@@game),
       turn: @@game.turn,
-      cardsLeftInDeck: 10,
+      cardsLeftInDeck: @@game.cards_left,
       game_log: @@game.last_five_responses
       }
   end
@@ -108,10 +109,10 @@ class Server < Sinatra::Base
       target_card = target_card.to_i
     end
     result = @@game.run_round(Request.new(player_num, target_card, target_num).to_json)
-    @@bot_names.each do |name|
-      self.class.run_bot_turn(name)
-    end
-    hash = {status: 200}
+    # @@bot_names.each do |name|
+    #   self.class.run_bot_turn(name)
+    # end
+    hash = {message: "GameIsReady"}
     json hash
   end
 end

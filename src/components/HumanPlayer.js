@@ -15,8 +15,10 @@ class HumanPlayer extends React.Component {
         targetCard: this.props.targetCard,
         currentPlayer: this.props.name
       })
-    });
-    setInterval(() => {window.location.reload()}, 500)
+    }).then(info => info.json()).then((info) => {
+        console.log(info['message']);
+        this.props.updateState(info['message']);
+    })
     event.preventDefault();
   }
 

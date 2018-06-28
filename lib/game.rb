@@ -26,6 +26,10 @@ class Game
     return player
   end
 
+  def cards_left
+    @deck.cards_left
+  end
+
   def fill_up_with_robots(bot_names)
     num_of_bots = bot_names.length
     num_of_bots.times do |index|
