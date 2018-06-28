@@ -25,6 +25,7 @@ class RobotPlayer extends React.Component {
 
   render() {
     if (this.props.turn === 1) {
+      console.log(this.props.name)
       return (
         <div className='player-div'>
           {this.correctPlayer(this.props.name)}

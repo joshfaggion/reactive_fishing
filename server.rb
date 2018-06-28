@@ -5,6 +5,8 @@ require 'sinatra/base'
 require './lib/game.rb'
 require 'sinatra/json'
 require 'json'
+require './lib/request'
+require './lib/response'
 
 class Server < Sinatra::Base
   enable :sessions
@@ -12,6 +14,12 @@ class Server < Sinatra::Base
   json = File.read('names.json')
   @@array_of_names = JSON.parse(json)
   @@bot_names = []
+  @@game = false
+
+  def self.run_bot_turn(bot_name)
+    bot = @@game.find_player_by_name(bot_name)
+    target_card = bot.player_hand[rand(player_hand.length)]
+  end
 
   def self.game_state
     number_of_bots = @@num_of_players.to_i
@@ -22,7 +30,6 @@ class Server < Sinatra::Base
       bots: self.return_bot_stats(@@game),
       turn: @@game.turn,
       cardsLeftInDeck: 10,
-      # This will be taken into function, but its not really necessary right now.
       game_log: @@game.last_five_responses
       }
   end
@@ -30,7 +37,7 @@ class Server < Sinatra::Base
   def self.initialize_game(num_of_players)
     @@game = Game.new(num_of_players)
     @@player = @@game.create_player(@@name)
-    number_of_bots = @@num_of_players.to_i
+    number_of_bots = @@num_of_players.to_i - 1
     number_of_bots.times do
       @@bot_names.push(@@array_of_names['names'][rand(@@array_of_names['names'].length)])
     end
@@ -40,10 +47,11 @@ class Server < Sinatra::Base
 
   def self.return_bot_stats(game)
     overall_array = []
-    game.players_array.each_with_index do |player, index|
+    @@game.players_array.each_with_index do |player, index|
       unless index == 0
         array = []
-        array.push(@@bot_names[index])
+        # It has to be one less then index, because index is from the players_array, not the bot_names.
+        array.push(@@bot_names[index - 1])
         array.push(player.img_compatible_cards)
         # array.push(player.display_matches)
         array.push(["d6", "c8", "s9"])
@@ -58,8 +66,6 @@ class Server < Sinatra::Base
   end
 
   post('/join') do
-    @@game = nil
-    @@bot_names = []
     push = JSON.parse(request.body.read)
     @@name = push['name']
   end
@@ -77,17 +83,35 @@ class Server < Sinatra::Base
   end
 
   get('/component_to_render') do
-    @@game ||= nil
-    if @@game == nil
-      hash = {game_existing: false}
-      json hash
-    else
+    if @@game
       hash = {game_existing: true}
-      json hash
+    else
+      hash = {game_existing: false}
     end
+    json hash
   end
 
   post('/request') do
-    
+    push = JSON.parse(request.body.read)
+    player_num = @@game.find_player_by_name(push['currentPlayer'])
+    target_num = @@game.find_player_by_name(push['targetPlayer'])
+    target_card = push['targetCard']
+    if target_card == 'k'
+      target_card = 'king'
+    elsif target_card == 'j'
+      target_card = 'jack'
+    elsif target_card == 'q'
+      target_card = 'queen'
+    elsif target_card == 'a'
+      target_card = 'ace'
+    else
+      target_card = target_card.to_i
+    end
+    result = @@game.run_round(Request.new(player_num, target_card, target_num).to_json)
+    @@bot_names.each do |name|
+      self.class.run_bot_turn(name)
+    end
+    hash = {status: 200}
+    json hash
   end
 end

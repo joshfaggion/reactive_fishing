@@ -17,6 +17,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    console.log('It did mount!!')
     fetch('/component_to_render', {
       method: 'GET'
     }).then(info => info.json()).then((info) => {

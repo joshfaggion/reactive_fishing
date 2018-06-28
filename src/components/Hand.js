@@ -21,7 +21,6 @@ class Hand extends React.Component {
   }
 
   render() {
-    console.log(this.props.turn)
     const cards=this.props.playerCards
       if (this.props.turn === 1) {
         return (

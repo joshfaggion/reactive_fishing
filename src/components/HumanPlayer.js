@@ -12,9 +12,11 @@ class HumanPlayer extends React.Component {
       method: 'POST',
       body: JSON.stringify({
         targetPlayer: this.props.targetPlayer,
-        targetCard: this.props.targetCard
+        targetCard: this.props.targetCard,
+        currentPlayer: this.props.name
       })
     });
+    setInterval(() => {window.location.reload()}, 500)
     event.preventDefault();
   }
 

@@ -27,7 +27,7 @@ class Game
   end
 
   def fill_up_with_robots(bot_names)
-    num_of_bots = bot_names.length - 1
+    num_of_bots = bot_names.length
     num_of_bots.times do |index|
       create_player(bot_names[index])
     end
