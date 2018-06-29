@@ -17,6 +17,7 @@ class Server < Sinatra::Base
   @@game = false
 
   def self.run_bot_turn(bot_name)
+    # This runs an individual bot turn.
     bot = @@game.players_array[@@game.find_player_by_name(bot_name) - 1]
     if bot.cards_left == 0
       @@game.next_turn
@@ -32,6 +33,7 @@ class Server < Sinatra::Base
   end
 
   def self.game_state
+    # This just returns the game state, which is everything the front-end needs to know.
     number_of_bots = @@num_of_players.to_i
     {
       player_cards: @@player.img_compatible_cards,
@@ -48,6 +50,7 @@ class Server < Sinatra::Base
   end
 
   def self.initialize_game(num_of_players)
+    # This creates the game and initializes the players.
     @@game = Game.new(num_of_players)
     @@player = @@game.create_player(@@name)
     number_of_bots = @@num_of_players.to_i - 1
@@ -59,11 +62,12 @@ class Server < Sinatra::Base
   end
 
   def self.return_bot_stats(game)
+    # This returns all the bot stats, matches, cards, etc.
     overall_array = []
     @@game.players_array.each_with_index do |player, index|
       unless index == 0
         array = []
-        # It has to be one less then index, because index is from the players_array, not the bot_names.
+        # It has to be two less then index, because index is from the players_array, not the bot_names.
         array.push(@@bot_names[index - 1])
         array.push(player.img_compatible_cards)
         array.push(player.display_matches)
@@ -78,6 +82,7 @@ class Server < Sinatra::Base
   end
 
   post('/join') do
+    # This receives the names.
     @@bot_names = []
     if @@game
       @@game.reset_game
@@ -87,6 +92,7 @@ class Server < Sinatra::Base
   end
 
   post('/num_of_players') do
+    # This receives the number of players.
     push = JSON.parse(request.body.read)
     @@num_of_players = push['numOfPlayers']
     self.class.initialize_game(@@num_of_players)
@@ -99,6 +105,7 @@ class Server < Sinatra::Base
   end
 
   get('/component_to_render') do
+    # This checks to see if a game is there to render, if not, it will not render the game.
     if @@game
       hash = {game_existing: true}
     else
@@ -108,6 +115,7 @@ class Server < Sinatra::Base
   end
 
   post('/request') do
+    # This runs the human's turn, and then runs all the bots turns.
     push = JSON.parse(request.body.read)
     player_num = @@game.find_player_by_name(push['currentPlayer'])
     target_num = @@game.find_player_by_name(push['targetPlayer'])
@@ -129,6 +137,7 @@ class Server < Sinatra::Base
   end
 
   get('/winner') do
+    # This tells React who is the winner.
     winners = @@game.who_is_winner()
     hash = {}
     if winners.class == Array
@@ -146,6 +155,7 @@ class Server < Sinatra::Base
 
 
   def self.run_bots
+    # This runs the logic for how many bots should be run.
     if @@player.cards_left == 0 && @@game.cards_left == 0
       @@game.next_turn
     end

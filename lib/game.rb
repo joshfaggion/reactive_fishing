@@ -60,30 +60,38 @@ class Game
     if cards == "Go Fish!"
       card_refills
       go_fish_card = go_fish(original_fisher)
-      fisher.pair_cards
-      next_turn
+      cards_to_be_deleted = []
       @players_array.each do |player|
         player.player_hand.each do |card|
           if card == nil
-            player.player_hand.delete(card)
+            cards_to_be_deleted.push(card)
           end
         end
+        cards_to_be_deleted.each do |card|
+          player.player_hand.delete(card)
+        end
       end
+      fisher.pair_cards
+      next_turn
       card_refills
       response = Response.new(original_fisher, desired_rank, original_target, false).to_json
       @responses.push(response)
       return response
     else
       fisher.take_cards(cards)
-      fisher.pair_cards
       card_refills
+      cards_to_be_deleted = []
       @players_array.each do |player|
         player.player_hand.each do |card|
           if card == nil
-            player.player_hand.delete(card)
+            cards_to_be_deleted.push(card)
           end
         end
+        cards_to_be_deleted.each do |card|
+          player.player_hand.delete(card)
+        end
       end
+      fisher.pair_cards
       cards_array = []
       cards.each do |card|
         cards_array.push(card.string_value)
