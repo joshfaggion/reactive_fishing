@@ -111,12 +111,12 @@ describe '#game?' do
     player2.set_hand([])
     player3.set_hand([])
     expect(game.winner?).to eq true
-    expect(game.who_is_winner).to eq ('Its a tie!')
+    expect(game.who_is_winner[1].name).to eq ('Jim')
     # Maybe test if one player should win.
   end
   it 'should say player2 has won the game.' do
     game = Game.new(2)
-    game.create_player("Jim")
+    game.create_player("Bob")
     game.create_player("Jim")
     player1 = game.find_player(1)
     player2 = game.find_player(2)
@@ -126,6 +126,6 @@ describe '#game?' do
     json_request = Request.new(2, '10', 1).to_json
     game.run_round(json_request)
     expect(game.winner?).to eq true
-    expect(game.who_is_winner).to eq 2
+    expect(game.who_is_winner.name).to eq "Jim"
   end
 end

@@ -78,6 +78,7 @@ class Server < Sinatra::Base
   end
 
   post('/join') do
+    @@bot_names = []
     if @@game
       @@game.reset_game
     end
@@ -121,20 +122,9 @@ class Server < Sinatra::Base
       target_card = 'ace'
     end
     result = @@game.run_round(Request.new(player_num, target_card, target_num).to_json)
-    if @@player.cards_left == 0 && @@game.cards_left == 0
-      @@game.next_turn
-    end
-    until @@game.turn == 1
-      if @@player.cards_left < 1
-        until @@game.winner?
-          self.class.run_bot_turn(@@bot_names[@@game.turn - 2])
-        end
-        break
-      else
-        self.class.run_bot_turn(@@bot_names[@@game.turn - 2])
-      end
-    end
+    self.class.run_bots
     hash = {message: "GameIsReady"}
+    self.class.run_bots
     json hash
   end
 
@@ -152,5 +142,22 @@ class Server < Sinatra::Base
       hash = {message: "#{winners.name} won the game with #{winners.points} points!"}
     end
     json hash
+  end
+
+
+  def self.run_bots
+    if @@player.cards_left == 0 && @@game.cards_left == 0
+      @@game.next_turn
+    end
+    until @@game.turn == 1
+      if @@player.cards_left < 1
+        until @@game.winner?
+          self.run_bot_turn(@@bot_names[@@game.turn - 2])
+        end
+        break
+      else
+        self.run_bot_turn(@@bot_names[@@game.turn - 2])
+      end
+    end
   end
 end

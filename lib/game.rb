@@ -58,9 +58,9 @@ class Game
     fisher = find_player(original_fisher)
     cards = target.card_in_hand(desired_rank)
     if cards == "Go Fish!"
-      fisher.pair_cards
       card_refills
       go_fish_card = go_fish(original_fisher)
+      fisher.pair_cards
       next_turn
       @players_array.each do |player|
         player.player_hand.each do |card|
@@ -160,9 +160,9 @@ class Game
         high_score = player.points
         highest_player = player
         ties = []
-        ties.push(player.name)
+        ties.push(player)
       elsif player.points == high_score
-        ties.push(player.name)
+        ties.push(player)
       end
     end
     if ties.length == 1
