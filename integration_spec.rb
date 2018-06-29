@@ -20,24 +20,16 @@ Capybara.register_driver :selenium do |app|
 end
 
 RSpec.describe Server, type: :feature do
-  it 'can go to choose players page', :js do
-    visit '/'
-    sleep(0.5)
-    fill_in("name", :with => "Jim")
-    sleep(0.5)
-    click_on("Submit")
-    sleep(0.5)
-    expect(page).to have_content "-Join Game-"
-  end
-
-  it 'can go to the game page, and get a player name and some cards', :js do
+  it 'can select a card and a player', :js do
     visit '/'
     fill_in("name", :with => "Jim")
     click_on("Submit")
-    sleep(0.2)
     fill_in("players", :with => "3")
     click_on("Submit")
-    sleep(0.2)
-    expect(page).to have_content "Jim"
+    find('.player-hand', match: :first).click
+    find('.player-div', match: :first).click
+    click_on("Submit Your Card Request")
+    sleep(0.3)
+    expect(page.text).to match (/Jim\s\w/)
   end
 end

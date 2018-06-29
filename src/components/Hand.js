@@ -20,7 +20,7 @@ class Hand extends React.Component {
     const cards=this.props.playerCards
       if (this.props.turn === 1) {
         return (
-          <div>
+          <div className='player-hand'>
           {cards.map((card, index) =>
             this.renderCorrectCard(card, index)
             )
@@ -29,7 +29,7 @@ class Hand extends React.Component {
         )
       } else {
         return (
-          <div>
+          <div className="player-hand">
           {cards.map((card, index) =>
             <img key={`img${index}`} src={`img/cards/${card}.png`} alt="A card"/>
             )
