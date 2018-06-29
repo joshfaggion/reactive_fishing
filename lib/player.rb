@@ -20,23 +20,31 @@ class Player
   end
 
   def card_in_hand(chosen_rank)
-    matching_card = []
+    matching_cards = []
+    cards_to_be_deleted = []
     @player_hand.each do |card|
       if chosen_rank == card.rank
-        matching_card = card
-        @player_hand.delete(card)
-
-        return matching_card
+        matching_cards.push(card)
+        cards_to_be_deleted.push(card)
       end
     end
-    if matching_card == []
+    if matching_cards == []
       return "Go Fish!"
     end
-    return matching_card
+    cards_to_be_deleted.each do |card|
+      @player_hand.delete(card)
+    end
+    return matching_cards
   end
 
-  def take_card(card)
-    @player_hand.push(card)
+  def take_cards(cards)
+    if cards.class == Array
+      cards.each do |card|
+        @player_hand.push(card)
+      end
+    else
+      @player_hand.push(cards)
+    end
   end
 
   def pair_cards

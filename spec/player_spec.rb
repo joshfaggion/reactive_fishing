@@ -13,7 +13,7 @@ describe '#player?' do
     players_hand = player.set_hand([PlayingCard.new('8', 'Spades'), PlayingCard.new('8', 'Diamonds'), PlayingCard.new('10', 'Hearts')])
     matching_card = players_hand[0]
     desired_rank = '8'
-    expect(player.card_in_hand(desired_rank)).to eq matching_card
+    expect(player.card_in_hand(desired_rank)[0]).to eq matching_card
   end
 
   it 'should return false for no cards matching' do
@@ -30,7 +30,7 @@ describe '#player?' do
     player2 = Player.new("Jim")
     player2.set_hand([PlayingCard.new('10', 'Hearts')])
     desired_rank = '10'
-    player1.take_card(player2.card_in_hand(desired_rank))
+    player1.take_cards(player2.card_in_hand(desired_rank))
     expect(player1.cards_left).to eq 2
   end
 

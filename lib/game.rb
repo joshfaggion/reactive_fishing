@@ -3,6 +3,7 @@ require 'pry'
 require_relative 'request'
 require_relative 'response'
 require_relative 'card_deck'
+require 'json'
 
 class Game
   attr_reader :turn, :deck, :players_array
@@ -14,10 +15,6 @@ class Game
     @deck.shuffle
     @responses = []
     @num_of_players = num_of_players
-    # This is for the first game mode with terminals.
-    # num_of_players.times do
-    #   @players_array.push(Player.new)
-    # end
   end
 
   def create_player(name)
@@ -59,19 +56,40 @@ class Game
     end
     target = find_player(original_target)
     fisher = find_player(original_fisher)
-    card = target.card_in_hand(desired_rank)
-    if card == "Go Fish!"
+    cards = target.card_in_hand(desired_rank)
+    if cards == "Go Fish!"
+      fisher.pair_cards
       card_refills
       go_fish_card = go_fish(original_fisher)
       next_turn
-      response = Response.new(original_fisher, desired_rank, original_target, false, "#{go_fish_card.string_value}").to_json
+      @players_array.each do |player|
+        player.player_hand.each do |card|
+          if card == nil
+            player.player_hand.delete(card)
+          end
+        end
+      end
+      card_refills
+      response = Response.new(original_fisher, desired_rank, original_target, false).to_json
       @responses.push(response)
       return response
     else
-      fisher.take_card(card)
+      fisher.take_cards(cards)
       fisher.pair_cards
       card_refills
-      response = Response.new(original_fisher, desired_rank, original_target, true, "#{card.string_value}").to_json
+      @players_array.each do |player|
+        player.player_hand.each do |card|
+          if card == nil
+            player.player_hand.delete(card)
+          end
+        end
+      end
+      cards_array = []
+      cards.each do |card|
+        cards_array.push(card.string_value)
+      end
+      cards_string = cards_array.join(", ")
+      response = Response.new(original_fisher, desired_rank, original_target, true, cards_string).to_json
       @responses.push(response)
       return response
     end
@@ -90,7 +108,7 @@ class Game
   def go_fish(player)
     the_player = players_array[player - 1]
     top_card = deck.use_top_card
-    the_player.take_card(top_card)
+    the_player.take_cards(top_card)
     return top_card
   end
 
@@ -113,7 +131,7 @@ class Game
           if deck.cards_left == 0
             return nil
           end
-          player.take_card(deck.use_top_card)
+          player.take_cards(deck.use_top_card)
         end
       end
     end
@@ -135,17 +153,23 @@ class Game
   def who_is_winner
     # Returns which player is the winner.
     high_score = 0
+    ties = []
     highest_player = ''
     players_array.each do |player|
       if player.points > high_score
         high_score = player.points
         highest_player = player
+        ties = []
+        ties.push(player.name)
+      elsif player.points == high_score
+        ties.push(player.name)
       end
     end
-    if high_score == 0
-      return "Its a tie!"
+    if ties.length == 1
+      return highest_player
+    else
+      return ties
     end
-    return @players_array.index(highest_player) + 1 # Player One = 1 etc.
   end
 
   def clear_deck
@@ -159,7 +183,7 @@ class Game
 
   def last_five_responses
     tmp_responses = []
-    usalbe_responses = []
+    usable_responses = []
     if @responses.length == 0
       return ["No moves yet."]
     end
@@ -167,8 +191,10 @@ class Game
     @responses.each do |num|
       counter+=1
     end
-    if counter > 5
-      @responses.shift()
+    if counter > 9
+      until @responses.length <= 9
+        @responses.shift()
+      end
       usable_responses = @responses
     else
       usable_responses = @responses
@@ -204,9 +230,8 @@ class Game
   def distribute_deck
     @players_array.each do |player|
       5.times do
-        player.take_card(@deck.use_top_card)
+        player.take_cards(@deck.use_top_card)
       end
     end
   end
-
 end

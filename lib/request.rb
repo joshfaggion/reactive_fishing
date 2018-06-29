@@ -13,7 +13,7 @@ class Request
   end
 
   def self.from_json(object)
-      data = JSON.load(object)
+      data = JSON.parse(object)
       self.new data['fisher'], data['rank'], data['target']
   end
 end

@@ -6,6 +6,7 @@ import Hand from './Hand'
 class HumanPlayer extends React.Component {
 
   handleSubmit(event) {
+    event.preventDefault();
     // Using this to fetch data sent from the form
     fetch('/request', {
       // This tells it to use a post method.
@@ -16,14 +17,14 @@ class HumanPlayer extends React.Component {
         currentPlayer: this.props.name
       })
     }).then(info => info.json()).then((info) => {
-        console.log(info['message']);
         this.props.updateState(info['message']);
+        this.props.updateGameState()
     })
-    event.preventDefault();
   }
 
   render() {
-    if (this.props.targetPlayer !== "" && this.props.targetCard !== "") {
+    if (this.props.targetPlayer !== "" && this.props.targetCard !== "" && this.props.turn === 1) {
+
       return (
         <div>
         <p>Click on a card, and a player to make your card request. Then, click Submit to enter your request.</p>
@@ -32,6 +33,10 @@ class HumanPlayer extends React.Component {
           </form>
             <h1>{this.props.name}</h1>
             <Hand turn={this.props.turn} targetCard={this.props.targetCard} playerCards={this.props.playerHand} selectCard={this.props.selectCard.bind(this)}/>
+            {this.props.playerMatches.map((card, index) =>
+              <img key={`matchedcard${index}`} src={`img/cards/${card}.png`} alt="A card"/>
+              )
+            }
         </div>
       )
     } else {
@@ -41,6 +46,10 @@ class HumanPlayer extends React.Component {
             <p>Click on a card, and a player to make your card request. Then, click Submit to enter your request.</p>
             <h1>{this.props.name}</h1>
             <Hand turn={this.props.turn} targetCard={this.props.targetCard} playerCards={this.props.playerHand} selectCard={this.props.selectCard.bind(this)}/>
+            {this.props.playerMatches.map((card, index) =>
+              <img key={`matchedcard${index}`} src={`img/cards/${card}.png`} alt="A card"/>
+            )
+            }
           </div>
         )
       } else {
@@ -48,6 +57,10 @@ class HumanPlayer extends React.Component {
           <div>
             <h1>{this.props.name}</h1>
             <Hand turn={this.props.turn} targetCard={this.props.targetCard} playerCards={this.props.playerHand} selectCard={this.props.selectCard.bind(this)}/>
+            {this.props.playerMatches.map((card, index) =>
+              <img key={`matchedcard${index}`} src={`img/cards/${card}.png`} alt="A card"/>
+              )
+            }
           </div>
         )
       }

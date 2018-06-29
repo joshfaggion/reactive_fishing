@@ -17,7 +17,10 @@ class Game extends React.Component {
       gameLog: [],
       targetCard: '',
       targetPlayer: '',
-      turn: 1
+      turn: 1,
+      playerMatches: [],
+      gameOver: false,
+      whoIsWinner: ''
     };
   }
 
@@ -48,12 +51,17 @@ class Game extends React.Component {
         playerCards: info['player_cards'],
         turn: info['turn'],
         cardsLeftInDeck: info['cardsLeftInDeck'],
-        gameLog: info['game_log']
+        gameLog: info['game_log'],
+        playerMatches: info['player_matches'],
+        gameOver: info['game_over']
       });
+      if (this.state.gameOver) {
+        this.props.updateState("EndGame")
+      }
     });
   }
 
-  componentDidUpdate() {
+  updateGameState() {
     fetch('/game', {
       method: 'GET'
     }).then(info => info.json()).then((info) => {
@@ -64,9 +72,17 @@ class Game extends React.Component {
         playerCards: info['player_cards'],
         turn: info['turn'],
         cardsLeftInDeck: info['cardsLeftInDeck'],
-        gameLog: info['game_log']
+        gameLog: info['game_log'],
+        targetPlayer: '',
+        targetCard: '',
+        playerMatches: info['player_matches'],
+        gameOver: info['game_over'],
+        whoIsWinner: info['who_is_winner']
       });
-    })
+      if (this.state.gameOver) {
+        this.props.updateState("EndGame")
+      }
+    });
   }
 
 
@@ -84,7 +100,7 @@ class Game extends React.Component {
               <PlayingSpace />
             </div>
             <div>
-              <HumanPlayer updateState={this.props.updateState.bind(this)} turn={this.state.turn} name={this.state.playerName} targetPlayer={this.state.targetPlayer} targetCard={this.state.targetCard} playerHand={cards} selectCard={this.selectCard.bind(this)}/>
+              <HumanPlayer playerMatches={this.state.playerMatches} updateGameState={this.updateGameState.bind(this)} updateState={this.props.updateState.bind(this)} turn={this.state.turn} name={this.state.playerName} targetPlayer={this.state.targetPlayer} targetCard={this.state.targetCard} playerHand={cards} selectCard={this.selectCard.bind(this)}/>
             </div>
             <div className="game-log">
               <GameLog log={this.state.gameLog}/>

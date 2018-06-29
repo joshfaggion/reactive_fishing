@@ -3,6 +3,7 @@ import './App.css';
 import Join from './Join'
 import Game from './Game'
 import NumPlayers from './NumPlayers'
+import EndGame from './EndGame'
 
 
 class App extends React.Component {
@@ -41,6 +42,12 @@ class App extends React.Component {
           <NumPlayers updateState={this.updateState.bind(this)}/>
         </div>
       );
+    } else if (this.state.currentComponent === "EndGame") {
+      return (
+        <div>
+          <EndGame updateState={this.updateState.bind(this)}/>
+        </div>
+      )
     } else {
       return (
         <div>

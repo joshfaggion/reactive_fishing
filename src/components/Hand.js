@@ -4,10 +4,6 @@ import './index.css';
 
 class Hand extends React.Component {
 
-  cardClicked (card) {
-    return "The card was " + card
-  }
-
   renderCorrectCard(card, index) {
     if (this.props.targetCard === card.slice(1)) {
       return (
