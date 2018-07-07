@@ -1,2 +1,1 @@
-web: rackup
-web: npm start
+web: bundle exec rackup
